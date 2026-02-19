@@ -11,7 +11,6 @@
     <header class="topbar">
       <div class="brand">
         <h1>MERKWAARDIGE LIJNEN</h1>
-        <p class="subtitle">Luister. Kies. Leer.</p>
       </div>
       <div class="hud">
         <div class="pill" id="hudProgress" aria-label="Voortgang">0/10</div>
@@ -23,14 +22,12 @@
       <div class="card">
         <h2>Start</h2>
         <p>
-          Je ziet een driehoek met een merkwaardige lijn. Klik op de muzieknoot om te luisteren.
+          Je ziet een driehoek met een merkwaardige lijn. Klik op de muzieknoot om een luistertip te ontvangen.
           Beantwoord daarna eerst <strong>Wat hoor je?</strong> en dan <strong>Welke merkwaardige lijn is het?</strong>
         </p>
         <button class="btn btn--primary" id="btnStart">Start het spel</button>
 
         <details class="note">
-          <summary>Tip</summary>
-          <p>De vragen komen elke keer in een andere volgorde.</p>
         </details>
       </div>
     </section>
@@ -53,16 +50,11 @@
           <figure class="figure">
             <img id="levelImage" alt="Driehoek met merkwaardige lijn" />
           </figure>
-
-          <div class="hint">
-            <span class="dot"></span>
-            <span>Tip: je moet eerst “Wat hoor je?” juist hebben voor je de lijn kan kiezen.</span>
-          </div>
+          
         </div>
 
         <div class="card qa">
-          <h2>Welke merkwaardige lijn is het?</h2>
-          <p class="muted">Deze vraag verschijnt pas na een juiste luister-keuze.</p>
+          
 
           <div class="answers" id="lineAnswers" aria-label="Antwoorden merkwaardige lijn"></div>
 
@@ -91,7 +83,7 @@
         <button class="iconBtn iconBtn--small" id="btnCloseModal" aria-label="Sluiten">×</button>
       </div>
 
-      <p class="muted">Klik gerust opnieuw op ♪♫ als je nog eens wil luisteren.</p>
+      <p class="muted">Klik opnieuw op ♪♫ als je nog eens wil luisteren.</p>
 
       <div class="answers" id="listenAnswers" aria-label="Antwoorden wat hoor je"></div>
 
