@@ -17,6 +17,7 @@ const LEVELS = [
 ];
 
 // 2) AUDIO-bestanden per lijn
+// (zorg dat dit overeenkomt met je mapnaam op GitHub: audio/ of geluid/)
 const AUDIO_BY_LINE = {
   hoogtelijn: "audio/1.mp3",
   bissectrice: "audio/2.mp3",
@@ -78,6 +79,13 @@ function resetAnswerButtons(containerEl) {
   containerEl.querySelectorAll("button").forEach(b => {
     b.classList.remove("correct", "wrong");
   });
+}
+
+// ✅ NIEUW: audio veilig stoppen
+function stopAudio() {
+  audioPlayer.pause();
+  // currentTime zetten kan soms fout geven als metadata nog niet geladen is, dus try/catch
+  try { audioPlayer.currentTime = 0; } catch {}
 }
 
 // -------------------------
@@ -221,6 +229,7 @@ function loadLevel() {
 }
 
 function finishGame() {
+  stopAudio(); // ✅ stop ook op einde
   setScreen(screenEnd);
   endText.textContent = `Je score is ${score} op ${deck.length}.`;
 }
@@ -260,6 +269,9 @@ function onLineAnswer(lineId, btnEl) {
   if (lineId === currentLevel.line) {
     btnEl.classList.add("correct");
 
+    // ✅ NIEUW: stop muziek zodra het juiste lijnantwoord is aangeklikt
+    stopAudio();
+
     // scoring: 1 punt voor dit level alleen als beide vragen van de eerste keer juist waren
     const levelPoint = (listenFirstTryStillPossible && lineFirstTryStillPossible) ? 1 : 0;
     score += levelPoint;
@@ -274,6 +286,9 @@ function onLineAnswer(lineId, btnEl) {
 }
 
 function nextLevel() {
+  // ✅ optioneel: zeker zijn dat er geen audio blijft hangen bij levelwissel
+  stopAudio();
+
   if (idx < deck.length - 1) {
     idx += 1;
     loadLevel();
@@ -288,6 +303,7 @@ function nextLevel() {
 btnStart.addEventListener("click", startGame);
 
 btnRestart.addEventListener("click", () => {
+  stopAudio(); // ✅ stop ook bij herstart
   setScreen(screenStart);
   hudProgress.textContent = "0/10";
   hudScore.textContent = "Score: 0";
@@ -301,17 +317,28 @@ btnPlayAudio.addEventListener("click", () => {
 btnOpenListen.addEventListener("click", openListenModal);
 
 btnListenAgain.addEventListener("click", playCurrentAudio);
-btnCloseModal.addEventListener("click", closeListenModal);
+
+btnCloseModal.addEventListener("click", () => {
+  // (je kan dit laten of weglaten; het is meestal fijn dat de audio stopt als je sluit)
+  stopAudio();
+  closeListenModal();
+});
 
 listenModal.addEventListener("click", (e) => {
   const t = e.target;
-  if (t && t.dataset && t.dataset.close === "1") closeListenModal();
+  if (t && t.dataset && t.dataset.close === "1") {
+    stopAudio(); // ✅ stop bij klik buiten modal
+    closeListenModal();
+  }
 });
 
 btnNext.addEventListener("click", nextLevel);
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !listenModal.hidden) closeListenModal();
+  if (e.key === "Escape" && !listenModal.hidden) {
+    stopAudio(); // ✅ stop bij Escape
+    closeListenModal();
+  }
 });
 
 // Init
