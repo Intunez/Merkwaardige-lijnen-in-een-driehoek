@@ -18,10 +18,10 @@ const LEVELS = [
 
 // 2) AUDIO-bestanden per lijn
 const AUDIO_BY_LINE = {
-  hoogtelijn: "geluid/1.mp3",
-  bissectrice: "geluid/2.mp3",
-  zwaartelijn: "geluid/3.mp3",
-  middelloodlijn: "geluid/4.mp3",
+  hoogtelijn: "audio/1.mp3",
+  bissectrice: "audio/2.mp3",
+  zwaartelijn: "audio/3.mp3",
+  middelloodlijn: "audio/4.mp3",
 };
 
 // 3) “Wat hoor je?” opties (vaste set, exact zoals jij wil)
