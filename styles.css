@@ -221,28 +221,48 @@ body{
 }
 .note summary{ cursor: pointer; }
 
+/* =========================
+   MODAL – NIEUWE LAYOUT
+   (tussen afbeelding en rechterkolom)
+   ========================= */
+
 .modal[hidden]{ display: none; }
+
+/* modal neemt hele scherm in, maar panel staat niet meer gecentreerd */
 .modal{
   position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
   z-index: 1000;
+  pointer-events: none; /* klikbaar blijven achter modal, behalve panel/backdrop */
 }
+
+/* backdrop blijft klikbaar om te sluiten */
 .modal__backdrop{
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.35);
+  pointer-events: auto;
 }
+
+/* panel: rechts van de afbeelding, tussen de twee kaarten */
 .modal__panel{
-  position: relative;
-  width: min(640px, calc(100% - 24px));
+  position: absolute;
+  top: 120px;
+
+  /* deze 2 lijnen bepalen waar hij hangt */
+  left: 50%;
+  transform: translateX(-60%);
+
+  width: min(520px, 90vw);
   border-radius: 18px;
   border: 1px solid var(--border);
   background: linear-gradient(180deg, var(--card2), rgba(0,0,0,0.35));
   padding: 16px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+
+  pointer-events: auto;
 }
+
 .modal__header{
   display: flex;
   justify-content: space-between;
