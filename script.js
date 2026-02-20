@@ -28,7 +28,7 @@ const AUDIO_BY_LINE = {
 // 3) “Wat hoor je?” opties (vaste set, exact zoals jij wil)
 const LISTEN_OPTIONS = [
   { id: "heavy", label: "heavy, zwaar" },
-  { id: "twohalves", label: "twee gelijke helften" },
+  { id: "twohalves", label: "the other half of me" },
   { id: "highmarch", label: "mars: hoge tonen" },
   { id: "lowmarch", label: "mars: geen hoge tonen" },
 ];
