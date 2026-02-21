@@ -22,7 +22,6 @@ body{
 }
 
 .app{
-  /* iets breder = meer ruimte links/rechts */
   max-width: 1280px;
   margin: 0 auto;
   padding: 18px;
@@ -64,21 +63,17 @@ body{
 .screen{ display: none; }
 .screen--active{ display: block; }
 
-/* ✅ NIEUW: 3-koloms grid met een “middenstrook” voor de modal */
+/* ✅ 3-koloms grid met “middenstrook” voor de modal */
 .grid{
   display: grid;
-  /* 1) afbeelding  2) lege ruimte (modal)  3) antwoorden */
   grid-template-columns: minmax(0, 1.35fr) clamp(240px, 34vw, 560px) minmax(0, 0.85fr);
   gap: 14px;
   align-items: start;
 }
-
-/* zet de kaarten expliciet in kolom 1 en 3 */
 .card.visual{ grid-column: 1; }
 .card.qa{ grid-column: 3; }
 
 @media (max-width: 980px){
-  /* op kleine schermen weer gewoon 1 kolom */
   .grid{ grid-template-columns: 1fr; }
   .card.visual{ grid-column: auto; }
   .card.qa{ grid-column: auto; }
@@ -191,6 +186,7 @@ body{
   cursor: pointer;
   font-weight: 700;
   font-size: 14px;
+  color: var(--text);
 }
 .answerBtn:hover{ background: rgba(255,255,255,0.10); }
 .answerBtn:focus{ outline: 3px solid var(--focus); outline-offset: 2px; }
@@ -234,8 +230,7 @@ body{
 .note summary{ cursor: pointer; }
 
 /* =========================
-   MODAL – terug gecentreerd
-   (nu valt die in de “middenstrook”)
+   MODAL – leesbaar + subtiele gloed
    ========================= */
 .modal[hidden]{ display: none; }
 .modal{
@@ -245,20 +240,43 @@ body{
   place-items: center;
   z-index: 1000;
 }
+
+/* iets donkerder backdrop zodat tekst altijd contrast heeft */
 .modal__backdrop{
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.55);
 }
+
+/* panel: behoud jouw “glass” look, maar met extra contrast + glow */
 .modal__panel{
   position: relative;
   width: min(560px, calc(100% - 24px));
   border-radius: 18px;
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, var(--card2), rgba(0,0,0,0.35));
+
+  /* iets duidelijkere rand */
+  border: 1px solid rgba(255,255,255,0.22);
+
+  /* minder doorschijnend dan vroeger => tekst beter leesbaar */
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.12),
+    rgba(0,0,0,0.60)
+  );
+
+  /* zachte blur voor “glass” */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
   padding: 16px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+
+  /* subtiele gloed in jouw focus-kleur */
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(120,180,255,0.10),
+    0 0 34px rgba(120,180,255,0.18);
 }
+
 .modal__header{
   display: flex;
   justify-content: space-between;
@@ -268,7 +286,24 @@ body{
 .modal__header h3{
   margin: 0;
   font-size: 18px;
+  color: rgba(255,255,255,0.96);
 }
+
+/* muted tekst in de modal iets lichter dan normaal */
+.modal__panel .muted{
+  color: rgba(255,255,255,0.78);
+}
+
+/* antwoordknoppen in modal: iets lichter zodat tekst niet “verzuipt” */
+.modal__panel .answerBtn{
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.96);
+}
+.modal__panel .answerBtn:hover{
+  background: rgba(255,255,255,0.14);
+}
+
 .modal__footer{
   display: flex;
   justify-content: space-between;
@@ -276,20 +311,20 @@ body{
   gap: 12px;
   margin-top: 12px;
 }
+
 /* =========================
    Start illustratie
    ========================= */
-
 .start-illustration{
   margin-top: 40px;
   display: flex;
   justify-content: center;
 }
-
 .start-illustration img{
   max-width: 600px;
   width: 90%;
   height: auto;
   filter: drop-shadow(0 20px 40px rgba(0,0,0,0.45));
 }
+
 .tiny{ font-size: 13px; color: var(--muted); }
