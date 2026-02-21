@@ -24,7 +24,7 @@ const AUDIO_BY_LINE = {
   middelloodlijn: "audio/4.mp3",
 };
 
-// ✅ NIEUW: feedback geluiden
+// feedback geluiden (enkel bij lijn-antwoorden)
 const sfxCorrect = new Audio("audio/genius.mp3"); // "you're a genius"
 const sfxWrong = new Audio("audio/pwa.mp3");      // "pwa pwa"
 
@@ -251,9 +251,7 @@ function onListenAnswer(answerId, btnEl) {
     btnEl.classList.add("correct");
     listenStatus.textContent = "Juist! Nu mag je de lijn kiezen.";
 
-    // ✅ NIEUW: juist geluid
-    playSfx(sfxCorrect);
-
+    // ✅ GEEN genius/pwa bij 'Wat hoor je?'
     lineUnlocked = true;
     disableLineQuestion(false);
 
@@ -264,9 +262,7 @@ function onListenAnswer(answerId, btnEl) {
     btnEl.classList.add("wrong");
     listenStatus.textContent = "Fout. Probeer opnieuw.";
 
-    // ✅ NIEUW: fout geluid
-    playSfx(sfxWrong);
-
+    // ✅ GEEN genius/pwa bij 'Wat hoor je?'
     listenFirstTryStillPossible = false;
   }
 }
@@ -280,10 +276,10 @@ function onLineAnswer(lineId, btnEl) {
   if (lineId === currentLevel.line) {
     btnEl.classList.add("correct");
 
-    // ✅ stop muziek zodra het juiste lijnantwoord is aangeklikt
+    // ✅ muziek stopt bij juist lijnantwoord
     stopAudio();
 
-    // ✅ NIEUW: juist geluid
+    // ✅ enkel hier juist/fout geluid
     playSfx(sfxCorrect);
 
     const levelPoint = (listenFirstTryStillPossible && lineFirstTryStillPossible) ? 1 : 0;
@@ -295,7 +291,7 @@ function onLineAnswer(lineId, btnEl) {
   } else {
     btnEl.classList.add("wrong");
 
-    // ✅ NIEUW: fout geluid
+    // ✅ enkel hier juist/fout geluid
     playSfx(sfxWrong);
 
     lineFirstTryStillPossible = false;
