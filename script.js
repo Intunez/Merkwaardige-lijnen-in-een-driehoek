@@ -17,7 +17,6 @@ const LEVELS = [
 ];
 
 // 2) AUDIO-bestanden per lijn
-// (zorg dat dit overeenkomt met je mapnaam op GitHub: audio/ of geluid/)
 const AUDIO_BY_LINE = {
   hoogtelijn: "audio/1.mp3",
   bissectrice: "audio/2.mp3",
@@ -25,7 +24,18 @@ const AUDIO_BY_LINE = {
   middelloodlijn: "audio/4.mp3",
 };
 
-// 3) “Wat hoor je?” opties (vaste set, exact zoals jij wil)
+// ✅ NIEUW: feedback geluiden
+const sfxCorrect = new Audio("audio/genius.mp3"); // "you're a genius"
+const sfxWrong = new Audio("audio/pwa.mp3");      // "pwa pwa"
+
+function playSfx(audioEl) {
+  if (!audioEl) return;
+  audioEl.pause();
+  try { audioEl.currentTime = 0; } catch {}
+  audioEl.play().catch(() => {});
+}
+
+// 3) “Wat hoor je?” opties
 const LISTEN_OPTIONS = [
   { id: "heavy", label: "heavy, zwaar" },
   { id: "twohalves", label: "the other half of me" },
@@ -33,12 +43,12 @@ const LISTEN_OPTIONS = [
   { id: "lowmarch", label: "mars: geen hoge tonen" },
 ];
 
-// 4) Juiste luisteroptie per lijn (zoals jij opgaf)
+// 4) Juiste luisteroptie per lijn
 const CORRECT_LISTEN_BY_LINE = {
-  hoogtelijn: "highmarch",        // mars: hoge tonen
-  middelloodlijn: "lowmarch",     // mars: geen hoge tonen
-  bissectrice: "twohalves",       // "the other half of me" -> twee gelijke helften
-  zwaartelijn: "heavy",           // heavy, zwaar
+  hoogtelijn: "highmarch",
+  middelloodlijn: "lowmarch",
+  bissectrice: "twohalves",
+  zwaartelijn: "heavy",
 };
 
 // 5) Antwoorden voor “Welke merkwaardige lijn?”
@@ -81,10 +91,9 @@ function resetAnswerButtons(containerEl) {
   });
 }
 
-// ✅ NIEUW: audio veilig stoppen
+// audio veilig stoppen
 function stopAudio() {
   audioPlayer.pause();
-  // currentTime zetten kan soms fout geven als metadata nog niet geladen is, dus try/catch
   try { audioPlayer.currentTime = 0; } catch {}
 }
 
@@ -188,9 +197,7 @@ function playCurrentAudio() {
 
   audioPlayer.src = src;
   audioPlayer.currentTime = 0;
-  audioPlayer.play().catch(() => {
-    // iOS/Safari kan blocken, maar dit gebeurt via klik en werkt meestal.
-  });
+  audioPlayer.play().catch(() => {});
 }
 
 // -------------------------
@@ -208,19 +215,16 @@ function startGame() {
 function loadLevel() {
   currentLevel = deck[idx];
 
-  // reset locks + first try flags
   lineUnlocked = false;
   listenFirstTryStillPossible = true;
   lineFirstTryStillPossible = true;
 
-  // UI reset
   btnNext.disabled = true;
   disableLineQuestion(true);
 
   levelIndexEl.textContent = String(idx + 1);
   levelImage.src = currentLevel.img;
 
-  // reset button styles
   resetAnswerButtons(listenAnswers);
   resetAnswerButtons(lineAnswers);
 
@@ -229,7 +233,7 @@ function loadLevel() {
 }
 
 function finishGame() {
-  stopAudio(); // ✅ stop ook op einde
+  stopAudio();
   setScreen(screenEnd);
   endText.textContent = `Je score is ${score} op ${deck.length}.`;
 }
@@ -246,8 +250,11 @@ function onListenAnswer(answerId, btnEl) {
   if (answerId === correct) {
     btnEl.classList.add("correct");
     listenStatus.textContent = "Juist! Nu mag je de lijn kiezen.";
-    lineUnlocked = true;
 
+    // ✅ NIEUW: juist geluid
+    playSfx(sfxCorrect);
+
+    lineUnlocked = true;
     disableLineQuestion(false);
 
     setTimeout(() => {
@@ -256,6 +263,10 @@ function onListenAnswer(answerId, btnEl) {
   } else {
     btnEl.classList.add("wrong");
     listenStatus.textContent = "Fout. Probeer opnieuw.";
+
+    // ✅ NIEUW: fout geluid
+    playSfx(sfxWrong);
+
     listenFirstTryStillPossible = false;
   }
 }
@@ -269,10 +280,12 @@ function onLineAnswer(lineId, btnEl) {
   if (lineId === currentLevel.line) {
     btnEl.classList.add("correct");
 
-    // ✅ NIEUW: stop muziek zodra het juiste lijnantwoord is aangeklikt
+    // ✅ stop muziek zodra het juiste lijnantwoord is aangeklikt
     stopAudio();
 
-    // scoring: 1 punt voor dit level alleen als beide vragen van de eerste keer juist waren
+    // ✅ NIEUW: juist geluid
+    playSfx(sfxCorrect);
+
     const levelPoint = (listenFirstTryStillPossible && lineFirstTryStillPossible) ? 1 : 0;
     score += levelPoint;
 
@@ -281,12 +294,15 @@ function onLineAnswer(lineId, btnEl) {
     updateHud();
   } else {
     btnEl.classList.add("wrong");
+
+    // ✅ NIEUW: fout geluid
+    playSfx(sfxWrong);
+
     lineFirstTryStillPossible = false;
   }
 }
 
 function nextLevel() {
-  // ✅ optioneel: zeker zijn dat er geen audio blijft hangen bij levelwissel
   stopAudio();
 
   if (idx < deck.length - 1) {
@@ -303,7 +319,7 @@ function nextLevel() {
 btnStart.addEventListener("click", startGame);
 
 btnRestart.addEventListener("click", () => {
-  stopAudio(); // ✅ stop ook bij herstart
+  stopAudio();
   setScreen(screenStart);
   hudProgress.textContent = "0/10";
   hudScore.textContent = "Score: 0";
@@ -315,11 +331,9 @@ btnPlayAudio.addEventListener("click", () => {
 });
 
 btnOpenListen.addEventListener("click", openListenModal);
-
 btnListenAgain.addEventListener("click", playCurrentAudio);
 
 btnCloseModal.addEventListener("click", () => {
-  // (je kan dit laten of weglaten; het is meestal fijn dat de audio stopt als je sluit)
   stopAudio();
   closeListenModal();
 });
@@ -327,7 +341,7 @@ btnCloseModal.addEventListener("click", () => {
 listenModal.addEventListener("click", (e) => {
   const t = e.target;
   if (t && t.dataset && t.dataset.close === "1") {
-    stopAudio(); // ✅ stop bij klik buiten modal
+    stopAudio();
     closeListenModal();
   }
 });
@@ -336,7 +350,7 @@ btnNext.addEventListener("click", nextLevel);
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && !listenModal.hidden) {
-    stopAudio(); // ✅ stop bij Escape
+    stopAudio();
     closeListenModal();
   }
 });
