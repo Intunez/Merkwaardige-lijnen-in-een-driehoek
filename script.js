@@ -39,8 +39,8 @@ function playSfx(audioEl) {
 const LISTEN_OPTIONS = [
   { id: "heavy", label: "heavy, zwaar" },
   { id: "twohalves", label: "the other half of me" },
-  { id: "highmarch", label: "mars: hoge tonen" },
-  { id: "lowmarch", label: "mars: geen hoge tonen" },
+  { id: "highmarch", label: "mars: strak, ordelijk, hoge tonen" },
+  { id: "lowmarch", label: "mars:strak, ordelijk, krachtig, symmetrisch" },
 ];
 
 // 4) Juiste luisteroptie per lijn
